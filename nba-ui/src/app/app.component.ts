@@ -15,7 +15,7 @@ export class AppComponent implements OnInit {
   title = 'nba-ui'
   matches = []
   src = ''
-  playingIdx = 0
+  playingIdx = -1
 
   infoTitle = ''
   infoDescription = ''
@@ -32,13 +32,13 @@ export class AppComponent implements OnInit {
         this.matches = res.data
       }
       
-      if (this.matches.length >= 1) {
-        this.loadStream(0)
-      } else {
-        this.infoTitle = '未找到比赛'
-        this.infoDescription = '当前没有比赛，请稍后再试。'
-        $("#infoModal").modal('show')
-      }
+      // if (this.matches.length >= 1) {
+      //   this.loadStream(0)
+      // } else {
+      //   this.infoTitle = '未找到比赛'
+      //   this.infoDescription = '当前没有比赛，请稍后再试。'
+      //   $("#infoModal").modal('show')
+      // }
 
     }, error => {
       this.loadingMatches = false
@@ -49,6 +49,7 @@ export class AppComponent implements OnInit {
   }
 
   loadStream(playingIdx: number) {
+    if (this.matches[playingIdx]['status'] != 'live') return
     this.playingIdx = playingIdx
     let url = this.matches[playingIdx]['id']
     this.http.get<any>(environment.urlPrefix + 'matches/' + url).subscribe(res => {

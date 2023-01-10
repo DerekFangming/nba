@@ -21,27 +21,28 @@ app.get('/matches', async (req, res) => {
         const matchRegex = /<td>.*?\/td>.*?<\/td>/g
         const matches = tables[0].matchAll(matchRegex)
         
-        for (const match of matches) {
+        for (const m of matches) {
+          let match = {teams:[]}
+
+          let matchDetailRegex = new RegExp('matchItem--home.*?name">(.*?)<.*?(https.*?\.png).*?(https.*?\.png).*?-->(.*?)<', 'g')
+          var matchDetail = matchDetailRegex.exec(m[0])
+          match.teams.push({
+            name: matchDetail[1],
+            icon: matchDetail[2]
+          })
+          match.teams.push({
+            name: matchDetail[4],
+            icon: matchDetail[3]
+          })
           
-          let matchRes = {icons:[]}
-          if (match[0].includes('LIVE')) {
-            var titleRegex = new RegExp("a title=\"(.*?)\"", "g")
-            var title = titleRegex.exec(match[0])
-            matchRes.title = title[1]
+          match.status = m[0].includes('LIVE') ? 'live' : m[0].includes('FT') ? 'ended' : 'upcoming'
 
-            const iconRegex = /https:.*?png/g
-            const icons = match[0].matchAll(iconRegex)
-            for (const icon of icons) {
-              matchRes.icons.push(icon[0])
-            }
+          var detailRegex = new RegExp("href=\"\/(detail-match.*?)\"", "g")
+          var detail = detailRegex.exec(m[0])
+          var id = detail[1].substring(detail[1].lastIndexOf("/") + 1, detail[1].length);
+          match.id = id
 
-            var detailRegex = new RegExp("href=\"\/(detail-match.*?)\"", "g")
-            var detail = detailRegex.exec(match[0])
-            var id = detail[1].substring(detail[1].lastIndexOf("/") + 1, detail[1].length);
-            matchRes.id = id
-
-            matchRespons.push(matchRes)
-          }
+          matchRespons.push(match)
         }
       }
 
@@ -59,6 +60,10 @@ app.get('/matches/:matchId', (req, res) => {
 
       var streamRegex = new RegExp('https:\/\/weakstream.org.*?"', 'g')
       var streams = streamRegex.exec(body)
+      if (streams == null) {
+        res.send({data: 'No stream is found'})
+        return
+      }
       let streamUrl = streams[0]
       streamUrl = streamUrl.substring(0, streamUrl.length - 1)
       
@@ -75,11 +80,11 @@ app.get('/matches/:matchId', (req, res) => {
           embedUrl = embedUrl.substring(0, embedUrl.length - 1)
           res.send({embed: embedUrl})
         } else {
-          res.send({data: 'Failed!'})
+          res.send({data: 'Failed to load embed url'})
         }
       })
     } else {
-      res.send({data: 'Failed!'})
+      res.send({data: 'Failed to load match details'})
     }
   })
   

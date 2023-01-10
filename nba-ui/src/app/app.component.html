@@ -9,28 +9,41 @@
   <div *ngIf="matches.length > 0" class="row">
 
     <div class="col-10" style="min-height: 95vh">
-      <iframe sandbox="allow-scripts allow-same-origin" style="height: 100%;width: 100%;" [src]="sanitizer.bypassSecurityTrustResourceUrl(src)"
+      <iframe *ngIf="src != ''" sandbox="allow-scripts allow-same-origin" style="height: 100%;width: 100%;" [src]="sanitizer.bypassSecurityTrustResourceUrl(src)"
         allowfullscreen scrolling=no allowtransparency></iframe>
+      <div *ngIf="src == ''" class="border border-2 mt-3 text-center" style="height: 100%;width: 100%;">
+        <p class="display-6 mt-5">当前没有直播</p>
+        <p class="lead">比赛开始后点击右方任意比赛开始直播</p>
+      </div>
     </div>
 
-    <div class="col-2">
+    <div class="col-2 overflow-auto" style="height: 95vh">
       <div class="row mt-3" *ngFor="let m of matches; let i = index">
 
-        <div class="card pointer border border-primary" (click)="loadStream(i)">
-          <div class="card-body">
+        <div class="card border" (click)="loadStream(i)" [ngClass]="m['status'] == 'live' ? 'pointer border-primary border-3' : ''" >
+          <div class="card-body pt-0">
             <div class="row">
-              <div class="col-5">
-                <img width="80" height="80" [src]="m['icons'][0]">
-              </div>
-              <div class="col-2">
-                <p class="lead mt-4">VS</p>
-              </div>
-              <div class="col-5">
-                
-                <img width="80" height="80" [src]="m['icons'][1]">
+              <div class="col ps-0">
+                <span *ngIf="m['status'] == 'live'" class="badge rounded-pill bg-danger"><i class="fa fa-circle me-1" aria-hidden="true"></i>Live</span>
+                <span *ngIf="i == playingIdx"class="badge rounded-pill bg-danger ml-2"><i class="fa fa-play" aria-hidden="true"></i>Playing</span>
+                <span *ngIf="m['status'] == 'upcoming'" class="badge rounded-pill bg-success">Upcoming</span>
+                <span *ngIf="m['status'] == 'ended'" class="badge rounded-pill bg-secondary">Ended</span>
               </div>
             </div>
-            <p>{{ m['title'] }}</p>
+
+            <div class="row mt-2">
+              <div class="col-5 text-center px-0">
+                <img width="80" height="80" [src]="m['teams'][0]['icon']">
+                <p class="mt-2 mb-0">{{ m['teams'][0]['name'] }}</p>
+              </div>
+              <div class="col-2 text-center px-0">
+                <p class="lead mt-4">VS</p>
+              </div>
+              <div class="col-5 text-center px-0">
+                <img width="80" height="80" [src]="m['teams'][1]['icon']">
+                <p class="mt-2 mb-0">{{ m['teams'][1]['name'] }}</p>
+              </div>
+            </div>
           </div>
         </div>
 
