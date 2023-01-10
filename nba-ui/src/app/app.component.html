@@ -1,0 +1,36 @@
+<div class="container-fluid">
+  <div class="row">
+
+    <div class="col-10" style="min-height: 95vh">
+      <iframe sandbox="allow-scripts allow-same-origin" style="height: 100%;width: 100%;" [src]="sanitizer.bypassSecurityTrustResourceUrl(src)"
+        allowfullscreen scrolling=no allowtransparency></iframe>
+    </div>
+
+    <div class="col-2">
+      <div class="row mt-3" *ngFor="let m of matches; let i = index">
+
+        <div class="card pointer border border-primary" (click)="loadStream(i)">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-5">
+                <img width="80" height="80" [src]="m['icons'][0]">
+              </div>
+              <div class="col-2">
+                <p class="lead mt-4">VS</p>
+              </div>
+              <div class="col-5">
+                
+                <img width="80" height="80" [src]="m['icons'][1]">
+              </div>
+            </div>
+            <p>{{ m['title'] }}</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
