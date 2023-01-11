@@ -38,6 +38,7 @@ export class AppComponent implements OnInit {
     this.http.get<any>(environment.urlPrefix + 'matches').subscribe(res => {
       if (init) this.loadingMatches = false
       if (res.data) {
+        if (this.playingIdx != -1 && this.matches[this.playingIdx]['id'] != res.data[this.playingIdx]['id'] ) this.playingIdx = -1
         this.matches = res.data
       }
       
