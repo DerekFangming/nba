@@ -25,6 +25,7 @@ export class AppComponent implements OnInit {
   constructor(private http: HttpClient, public sanitizer: DomSanitizer) { }
 
   ngOnInit() {
+    console.log(window.innerWidth)
     this.loadingMatches = true
     this.http.get<any>(environment.urlPrefix + 'matches').subscribe(res => {
       this.loadingMatches = false
@@ -65,6 +66,14 @@ export class AppComponent implements OnInit {
       this.infoDescription = error
       $("#infoModal").modal('show')
     })
+  }
+
+  getVidHeight() {
+    return window.innerWidth >= 960 ? {height: '95vh'} : {height: '40vh'}
+  }
+
+  getMenuHeight() {
+    return window.innerWidth >= 960 ? {height: '95vh'} : {height: '55vh'}
   }
 
 }
