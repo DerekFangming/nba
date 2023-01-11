@@ -46,8 +46,11 @@
             </div>
 
             <div class="row">
-              <div class="col text-center">
+              <div *ngIf="m['status'] != 'upcoming'" class="col text-center">
                 <p class="lead mb-0"><b class="text-success"> {{ m['teams'][0]['score'] }}</b> : <b class="text-success"> {{ m['teams'][1]['score'] }}</b></p>
+              </div>
+              <div *ngIf="m['status'] == 'upcoming'" class="col text-center">
+                <p class="lead mb-0"><b class="text-success"> {{ getStartTime(m['time']) }}</b></p>
               </div>
             </div>
             
