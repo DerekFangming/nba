@@ -42,6 +42,13 @@ app.get('/matches', async (req, res) => {
           var id = detail[1].substring(detail[1].lastIndexOf("/") + 1, detail[1].length);
           match.id = id
 
+          if (match.status != 'upcoming') {
+            let scoreRegex = new RegExp('matchItem--info">(.*?) - (.*?)<', 'g')
+            var score = scoreRegex.exec(m[0])
+            match.teams[0].score = score[1]
+            match.teams[1].score = score[2]
+          }
+
           matchRespons.push(match)
         }
       }
