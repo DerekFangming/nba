@@ -32,13 +32,13 @@ export class AppComponent implements OnInit {
         this.matches = res.data
       }
       
-      // if (this.matches.length >= 1) {
-      //   this.loadStream(0)
-      // } else {
-      //   this.infoTitle = '未找到比赛'
-      //   this.infoDescription = '当前没有比赛，请稍后再试。'
-      //   $("#infoModal").modal('show')
-      // }
+      if (this.matches.length >= 1) {
+        this.loadStream(0)
+      } else {
+        this.infoTitle = '未找到比赛'
+        this.infoDescription = '当前没有比赛，请稍后再试。'
+        $("#infoModal").modal('show')
+      }
 
     }, error => {
       this.loadingMatches = false
