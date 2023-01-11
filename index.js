@@ -8,20 +8,22 @@ const app = express()
 app.use(bodyParser.json({limit: '100mb'}), cors())
 const port = '9004'
 
-app.get('/matches', async (req, res) => {
+matches = []
 
+function findMatches() {
+  console.log('Sending')
   request('https://nbastreams.app', function (error, response, body) {
     if (!error && response.statusCode == 200) {
 
-      let matchRespons = []
+      matches = []
       var tableRegex = new RegExp("<table.*?matchTable.*?\/table>", "g")
       var tables = tableRegex.exec(body)
       if (tables.length == 1) {
 
         const matchRegex = /<td>.*?\/td>.*?<\/td>/g
-        const matches = tables[0].matchAll(matchRegex)
+        const rawMatches = tables[0].matchAll(matchRegex)
         
-        for (const m of matches) {
+        for (const m of rawMatches) {
           let match = {teams:[]}
 
           let matchDetailRegex = new RegExp('matchItem--home.*?name">(.*?)<.*?(https.*?\.png).*?(https.*?\.png).*?-->(.*?)<', 'g')
@@ -49,15 +51,17 @@ app.get('/matches', async (req, res) => {
             match.teams[1].score = score[2]
           }
 
-          matchRespons.push(match)
+          matches.push(match)
         }
       }
-
-      res.send({data: matchRespons})
     } else {
-      res.send({error: 'Failed to load matches'})
+      console.error('Failed to load matches')
     }
   })
+}
+
+app.get('/matches', async (req, res) => {
+  res.send({data: matches})
 })
 
 app.get('/matches/:matchId', (req, res) => {
@@ -103,3 +107,7 @@ app.listen(port, () => {
   console.log(`NBA app started on port ${port}`)
 })
 
+findMatches()
+setInterval(function() {
+  findMatches()
+}, 60000)

@@ -6,12 +6,12 @@
     </div>
   </div>
 
-  <div *ngIf="matches.length > 0" class="row">
+  <div *ngIf="!loadingMatches" class="row">
 
     <div class="col-lg-10 col-md-12" [ngStyle]="getVidHeight()" >
-      <iframe *ngIf="src != ''" sandbox="allow-scripts allow-same-origin" style="height: 100%;width: 100%;" [src]="sanitizer.bypassSecurityTrustResourceUrl(src)"
+      <iframe *ngIf="src" sandbox="allow-scripts allow-same-origin" style="height: 100%;width: 100%;" [src]="src"
         allowfullscreen scrolling=no allowtransparency></iframe>
-      <div *ngIf="src == ''" class="border border-2 mt-3 text-center" style="height: 100%;width: 100%;">
+      <div *ngIf="!loadingMatcheDetails && src == null" class="border border-2 mt-3 text-center" style="height: 100%;width: 100%;">
         <p class="display-6 mt-5">当前没有直播</p>
         <p class="lead">比赛开始后点击右方任意比赛开始直播</p>
       </div>
