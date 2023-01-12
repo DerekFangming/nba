@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment'
 declare var $: any
 
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,7 @@ export class AppComponent implements OnInit {
   title = 'nba-ui'
   matches = []
   src: SafeResourceUrl
+  streamId = ''
   playingIdx = -1
 
   infoTitle = ''
@@ -23,9 +25,15 @@ export class AppComponent implements OnInit {
   loadingMatches = false
   loadingMatcheDetails = false
 
-  constructor(private http: HttpClient, public sanitizer: DomSanitizer) { }
+  constructor(private http: HttpClient, public sanitizer: DomSanitizer, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
+    this.route.queryParams.subscribe( paramMap => {
+      if (paramMap.streamId) {
+        this.streamId = paramMap.streamId
+      }
+    })
+
     let that = this
     this.loadMatches(true)
     setInterval(function() {
@@ -43,8 +51,19 @@ export class AppComponent implements OnInit {
       }
       
       if (init && this.matches.length >= 1) {
-        console.log(111)
-        this.loadStream(0)
+        let matchIdx = this.matches.findIndex(m => m.id == this.streamId)
+        if (matchIdx == -1) {
+          this.router.navigate(
+            [], 
+            {
+              relativeTo: this.route,
+              queryParams: {}, 
+              queryParamsHandling: 'merge'
+            })
+          this.loadStream(0)
+        } else {
+          this.loadStream(matchIdx)
+        }
       } else if (init) {
         this.infoTitle = '未找到比赛'
         this.infoDescription = '当前没有比赛，请稍后再试。'
@@ -71,6 +90,14 @@ export class AppComponent implements OnInit {
       this.loadingMatcheDetails = false
       if (res.embed) {
         this.src = this.sanitizer.bypassSecurityTrustResourceUrl(res.embed)
+
+        this.router.navigate(
+          [], 
+          {
+            relativeTo: this.route,
+            queryParams: {streamId: url}, 
+            queryParamsHandling: 'merge'
+          })
       } else {
         this.infoTitle = '系统错误'
         this.infoDescription = '未找到embed地址'
