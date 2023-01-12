@@ -73,17 +73,26 @@ app.get('/matches/:matchId', (req, res) => {
   request(`https://scdn.dev/main-assets/${req.params.matchId}/basketball`, function (error, response, body) {
     if (!error && response.statusCode == 200) {
 
-      var streamRegex = new RegExp('https:\/\/weakstream.org.*?"', 'g')
-      var streams = streamRegex.exec(body)
-      if (streams == null) {
-        res.send({data: 'No stream is found'})
+      let matchDetail = {}
+
+      var techClipsRegex = new RegExp('https:\/\/techclips.net.*?"', 'g')
+      var techClips = techClipsRegex.exec(body)
+      let techClipsUrl = techClips[0]
+      techClipsUrl = techClipsUrl.substring(0, techClipsUrl.length - 1)
+      techClipsUrl = techClipsUrl.replace(/\/[0-9].*?\//g, '/clip/') + '.html'
+      matchDetail.techClips = techClipsUrl
+
+      var weakStreamRegex = new RegExp('https:\/\/weakstream.org.*?"', 'g')
+      var weakStream = weakStreamRegex.exec(body)
+      if (weakStream == null) {
+        res.send(matchDetail)
         return
       }
-      let streamUrl = streams[0]
-      streamUrl = streamUrl.substring(0, streamUrl.length - 1)
+      let weakStreamUrl = weakStream[0]
+      weakStreamUrl = weakStreamUrl.substring(0, weakStreamUrl.length - 1)
       
 
-      request(streamUrl, function (error, response, body) {
+      request(weakStreamUrl, function (error, response, body) {
         if (!error && response.statusCode == 200) {
 
           var iframeRegex = new RegExp("&lt;iframe.*?\/iframe&gt;", "g")
@@ -93,9 +102,11 @@ app.get('/matches/:matchId', (req, res) => {
           var embed = embedRegex.exec(iframe[0])
           let embedUrl = embed[0]
           embedUrl = embedUrl.substring(0, embedUrl.length - 1)
-          res.send({embed: embedUrl})
+          matchDetail.weakStream = embedUrl
+          res.send(matchDetail)
         } else {
-          res.send({data: 'Failed to load embed url'})
+          matchDetail.weakStream = 'Failed to load '
+          res.send(matchDetail)
         }
       })
     } else {

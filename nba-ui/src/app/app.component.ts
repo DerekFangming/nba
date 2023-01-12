@@ -19,6 +19,10 @@ export class AppComponent implements OnInit {
   streamId = ''
   playingIdx = -1
 
+  weakStream: string = null
+  techClips: string = null
+  playingUrl: string = null
+
   infoTitle = ''
   infoDescription = ''
 
@@ -81,6 +85,7 @@ export class AppComponent implements OnInit {
   }
 
   loadStream(playingIdx: number) {
+    console.log('Calling loadStream')
     if (this.matches[playingIdx]['status'] != 'live') return
 
     this.loadingMatcheDetails = true
@@ -88,8 +93,11 @@ export class AppComponent implements OnInit {
     let url = this.matches[playingIdx]['id']
     this.http.get<any>(environment.urlPrefix + 'matches/' + url).subscribe(res => {
       this.loadingMatcheDetails = false
-      if (res.embed) {
-        this.src = this.sanitizer.bypassSecurityTrustResourceUrl(res.embed)
+      if (res.weakStream || res.techClips) {
+        this.playingUrl = res.weakStream ? res.weakStream : res.techClips
+        this.src = this.sanitizer.bypassSecurityTrustResourceUrl(this.playingUrl)
+        this.weakStream = res.weakStream
+        this.techClips = res.techClips
 
         this.router.navigate(
           [], 
@@ -100,7 +108,7 @@ export class AppComponent implements OnInit {
           })
       } else {
         this.infoTitle = '系统错误'
-        this.infoDescription = '未找到embed地址'
+        this.infoDescription = '未找到直播地址'
         $("#infoModal").modal('show')
       }
     }, error => {
@@ -109,6 +117,11 @@ export class AppComponent implements OnInit {
       this.infoDescription = error
       $("#infoModal").modal('show')
     })
+  }
+
+  playStream(streamUrl: string) {
+    this.playingUrl = streamUrl
+    this.src = this.sanitizer.bypassSecurityTrustResourceUrl(streamUrl)
   }
 
   getStartTime(time: string) {
