@@ -11,7 +11,6 @@ const port = '9004'
 matches = []
 
 function findMatches() {
-  console.log('Sending')
   request('https://nbastreams.app', function (error, response, body) {
     if (!error && response.statusCode == 200) {
 
@@ -84,13 +83,19 @@ app.get('/matches/:matchId', (req, res) => {
         matchDetail.techClips = techClipsUrl
       }
 
+      let weakStreamUrl = ''
       var weakStreamRegex = new RegExp('https:\/\/weakstream.org.*?"', 'g')
       var weakStream = weakStreamRegex.exec(body)
+      
       if (weakStream == null) {
-        res.send(matchDetail)
-        return
+        // Attempt to guess url
+        console.log('Trying')
+        let match = matches.find( m => m.id == req.params.matchId )
+        let urlPiece = (match.teams[1].name.split(' ').join('-') + '-vs-' + match.teams[0].name.split(' ').join('-')).toLowerCase()
+
+        weakStreamUrl = 'https://weakstream.org/nba-stream/' + urlPiece
       }
-      let weakStreamUrl = weakStream[0]
+      weakStream[0]
       weakStreamUrl = weakStreamUrl.substring(0, weakStreamUrl.length - 1)
       
 
