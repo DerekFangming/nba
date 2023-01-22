@@ -77,10 +77,12 @@ app.get('/matches/:matchId', (req, res) => {
 
       var techClipsRegex = new RegExp('https:\/\/techclips.net.*?"', 'g')
       var techClips = techClipsRegex.exec(body)
-      let techClipsUrl = techClips[0]
-      techClipsUrl = techClipsUrl.substring(0, techClipsUrl.length - 1)
-      techClipsUrl = techClipsUrl.replace(/\/[0-9].*?\//g, '/clip/') + '.html'
-      matchDetail.techClips = techClipsUrl
+      if (techClips != null) {
+        let techClipsUrl = techClips[0]
+        techClipsUrl = techClipsUrl.substring(0, techClipsUrl.length - 1)
+        techClipsUrl = techClipsUrl.replace(/\/[0-9].*?\//g, '/clip/') + '.html'
+        matchDetail.techClips = techClipsUrl
+      }
 
       var weakStreamRegex = new RegExp('https:\/\/weakstream.org.*?"', 'g')
       var weakStream = weakStreamRegex.exec(body)
