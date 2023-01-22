@@ -4,13 +4,21 @@ const cors = require('cors')
 const path = require('path')
 const request = require('request')
 
+const axios = require('axios')
+
 const app = express()
 app.use(bodyParser.json({limit: '100mb'}), cors())
 const port = '9004'
 
 matches = []
 
-function findMatches() {
+async function findMatches() {
+
+  // console.log('1111111111111111111111111111')
+  // let aa = await axios.get('https://nbastreams.app')
+  // console.log('222222222222222222222222222222')
+  // console.log(aa)
+
   request('https://nbastreams.app', function (error, response, body) {
     if (!error && response.statusCode == 200) {
 
@@ -86,17 +94,17 @@ app.get('/matches/:matchId', (req, res) => {
       let weakStreamUrl = ''
       var weakStreamRegex = new RegExp('https:\/\/weakstream.org.*?"', 'g')
       var weakStream = weakStreamRegex.exec(body)
-      
+
       if (weakStream == null) {
-        // Attempt to guess url
-        console.log('Trying')
+        console.log('Trying to guess URL')
         let match = matches.find( m => m.id == req.params.matchId )
         let urlPiece = (match.teams[1].name.split(' ').join('-') + '-vs-' + match.teams[0].name.split(' ').join('-')).toLowerCase()
 
         weakStreamUrl = 'https://weakstream.org/nba-stream/' + urlPiece
+      } else {
+        weakStreamUrl = weakStream[0]
+        weakStreamUrl = weakStreamUrl.substring(0, weakStreamUrl.length - 1)
       }
-      weakStream[0]
-      weakStreamUrl = weakStreamUrl.substring(0, weakStreamUrl.length - 1)
       
 
       request(weakStreamUrl, function (error, response, body) {
@@ -112,7 +120,6 @@ app.get('/matches/:matchId', (req, res) => {
           matchDetail.weakStream = embedUrl
           res.send(matchDetail)
         } else {
-          matchDetail.weakStream = 'Failed to load '
           res.send(matchDetail)
         }
       })
