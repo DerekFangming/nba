@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const path = require('path')
 const request = require('request')
+const weakStreamResolver = require('./stream-resolver/weak-stream-resolver')
 
 const axios = require('axios')
 
@@ -96,11 +97,9 @@ app.get('/matches/:matchId', (req, res) => {
       var weakStream = weakStreamRegex.exec(body)
 
       if (weakStream == null) {
-        console.log('Trying to guess URL')
-        let match = matches.find( m => m.id == req.params.matchId )
-        let urlPiece = (match.teams[1].name.split(' ').join('-') + '-vs-' + match.teams[0].name.split(' ').join('-')).toLowerCase()
-
-        weakStreamUrl = 'https://weakstream.org/nba-stream/' + urlPiece
+        weakStreamResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name)
+        res.send(matchDetail)
+        return
       } else {
         weakStreamUrl = weakStream[0]
         weakStreamUrl = weakStreamUrl.substring(0, weakStreamUrl.length - 1)
@@ -128,6 +127,14 @@ app.get('/matches/:matchId', (req, res) => {
     }
   })
   
+})
+
+app.get('/test', async (req, res) => {
+
+  let matchDetail = {}
+  weakStreamResolver.resolve(matchDetail, 'Milwaukee Bucks', 'Detroit Pistons')
+  //console.log(matchDetail)
+  res.send({})
 })
 
 app.use(express.static(path.join(__dirname, 'public')))
