@@ -4,6 +4,7 @@ const cors = require('cors')
 const path = require('path')
 const request = require('request')
 const weakStreamResolver = require('./stream-resolver/weak-stream-resolver')
+const nbaStreamsResolver = require('./stream-resolver/nbastreams-app-resolver')
 
 const axios = require('axios')
 
@@ -14,11 +15,6 @@ const port = '9004'
 matches = []
 
 async function findMatches() {
-
-  // console.log('1111111111111111111111111111')
-  // let aa = await axios.get('https://nbastreams.app')
-  // console.log('222222222222222222222222222222')
-  // console.log(aa)
 
   request('https://nbastreams.app', function (error, response, body) {
     if (!error && response.statusCode == 200) {
@@ -77,57 +73,11 @@ app.get('/matches', async (req, res) => {
 })
 
 app.get('/matches/:matchId', async (req, res) => {
-
-  request(`https://scdn.dev/main-assets/${req.params.matchId}/basketball`, async function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-
-      let matchDetail = {}
-
-      var techClipsRegex = new RegExp('https:\/\/techclips.net.*?"', 'g')
-      var techClips = techClipsRegex.exec(body)
-      if (techClips != null) {
-        let techClipsUrl = techClips[0]
-        techClipsUrl = techClipsUrl.substring(0, techClipsUrl.length - 1)
-        techClipsUrl = techClipsUrl.replace(/\/[0-9].*?\//g, '/clip/') + '.html'
-        matchDetail.techClips = techClipsUrl
-      }
-
-      let weakStreamUrl = ''
-      var weakStreamRegex = new RegExp('https:\/\/weakstream.org.*?"', 'g')
-      var weakStream = weakStreamRegex.exec(body)
-
-      if (weakStream == null) {
-        let match = matches.find( m => m.id == req.params.matchId )
-        await weakStreamResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name)
-        res.send(matchDetail)
-        return
-      } else {
-        weakStreamUrl = weakStream[0]
-        weakStreamUrl = weakStreamUrl.substring(0, weakStreamUrl.length - 1)
-      }
-      
-
-      request(weakStreamUrl, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-
-          var iframeRegex = new RegExp("&lt;iframe.*?\/iframe&gt;", "g")
-          var iframe = iframeRegex.exec(body)
-
-          var embedRegex = new RegExp('https:\/\/weakstream.org.*?"', 'g')
-          var embed = embedRegex.exec(iframe[0])
-          let embedUrl = embed[0]
-          embedUrl = embedUrl.substring(0, embedUrl.length - 1)
-          matchDetail.weakStream = embedUrl
-          res.send(matchDetail)
-        } else {
-          res.send(matchDetail)
-        }
-      })
-    } else {
-      res.send({data: 'Failed to load match details'})
-    }
-  })
-  
+  let matchDetail = {}
+  let match = matches.find( m => m.id == req.params.matchId)
+  await nbaStreamsResolver.resolve(matchDetail, req.params.matchId)
+  await weakStreamResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name)
+  res.send(matchDetail)
 })
 
 app.get('/test', async (req, res) => {
