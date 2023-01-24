@@ -76,9 +76,9 @@ app.get('/matches', async (req, res) => {
   res.send({data: matches})
 })
 
-app.get('/matches/:matchId', (req, res) => {
+app.get('/matches/:matchId', async (req, res) => {
 
-  request(`https://scdn.dev/main-assets/${req.params.matchId}/basketball`, function (error, response, body) {
+  request(`https://scdn.dev/main-assets/${req.params.matchId}/basketball`, async function (error, response, body) {
     if (!error && response.statusCode == 200) {
 
       let matchDetail = {}
@@ -97,7 +97,8 @@ app.get('/matches/:matchId', (req, res) => {
       var weakStream = weakStreamRegex.exec(body)
 
       if (weakStream == null) {
-        weakStreamResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name)
+        let match = matches.find( m => m.id == req.params.matchId )
+        await weakStreamResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name)
         res.send(matchDetail)
         return
       } else {
