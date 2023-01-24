@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const path = require('path')
 const request = require('request')
+const techclipsResolver = require('./stream-resolver/techclips-resolver')
 const weakStreamResolver = require('./stream-resolver/weak-stream-resolver')
 const nbaStreamsResolver = require('./stream-resolver/nbastreams-app-resolver')
 
@@ -77,6 +78,7 @@ app.get('/matches/:matchId', async (req, res) => {
   let match = matches.find( m => m.id == req.params.matchId)
   await nbaStreamsResolver.resolve(matchDetail, req.params.matchId)
   await weakStreamResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name)
+  await techclipsResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name)
   res.send(matchDetail)
 })
 
@@ -84,7 +86,6 @@ app.get('/test', async (req, res) => {
 
   let matchDetail = {}
   weakStreamResolver.resolve(matchDetail, 'Milwaukee Bucks', 'Detroit Pistons')
-  //console.log(matchDetail)
   res.send({})
 })
 
