@@ -1,11 +1,15 @@
 const axios = require('axios')
 
-async function resolve(result, matchId) {
+async function resolve(result, matchName) {
 
   if (result.weakStream != null && result.techClips != null) return
 
   try {
-    let res = await axios.get(`https://scdn.dev/main-assets/${matchId}/basketball`)
+    let res = await axios.get(`https://nbastreams.app/live/${matchName}`)
+    var matchIdRegex = new RegExp('content=.*?phoenix-suns-dallas-mavericks\/(.*?)"', 'g')
+    var matchIds = matchIdRegex.exec(res.data)
+    
+    res = await axios.get(`https://scdn.dev/main-assets/${matchIds[1]}/basketball`)
 
     // Load techClips if not loaded
     if (result.techClips == null) {

@@ -47,8 +47,7 @@ async function findMatches() {
 
           var detailRegex = new RegExp("href=\"\/live\/(.*?)\"", "g")
           var detail = detailRegex.exec(m[0])
-          console.log(m[0])
-          var id = detail[1]//.substring(detail[1].lastIndexOf("/") + 1, detail[1].length);
+          var id = detail[1]
           match.id = id
 
           if (match.status != 'upcoming') {
