@@ -11,9 +11,14 @@
     <div class="col-lg-10 col-md-12" [ngStyle]="getVidHeight()" >
       <iframe *ngIf="src" sandbox="allow-scripts allow-same-origin" style="height: 100%;width: 100%;" [src]="src"
         allowfullscreen scrolling=no allowtransparency></iframe>
-      <div *ngIf="!loadingMatcheDetails && src == null" class="border border-2 mt-3 text-center" style="height: 100%;width: 100%;">
-        <p class="display-6 mt-5">当前没有直播</p>
-        <p class="lead">比赛开始后点击右方任意比赛开始直播</p>
+      <div *ngIf="!loadingMatcheDetails && src == null" class="border border-2 mt-3 text-center justify-content-center" style="height: 100%;width: 100%;display:flex;;align-items:center;">
+        <div>
+          <p class="display-6 mt-5">当前没有直播</p>
+          <p class="lead">比赛开始后点击右方任意比赛开始直播</p>
+        </div>
+      </div>
+      <div *ngIf="loadingMatcheDetails" class="border border-2 mt-3 justify-content-center" style="height: 100%;width: 100%;display:flex;;align-items:center;">
+        <i class="fa fa-refresh fa-spin fa-4x"></i>
       </div>
     </div>
 

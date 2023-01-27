@@ -85,9 +85,9 @@ export class AppComponent implements OnInit {
   }
 
   loadStream(playingIdx: number) {
-    console.log('Calling loadStream')
     if (this.matches[playingIdx]['status'] != 'live') return
 
+    this.src = null
     this.loadingMatcheDetails = true
     this.playingIdx = playingIdx
     let url = this.matches[playingIdx]['id']

@@ -2,10 +2,10 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const path = require('path')
-const request = require('request')
 const techclipsResolver = require('./stream-resolver/techclips-resolver')
 const weakStreamResolver = require('./stream-resolver/weak-stream-resolver')
 const nbaStreamsResolver = require('./stream-resolver/nbastreams-app-resolver')
+const { v4: uuidv4 } = require('uuid')
 
 const axios = require('axios')
 
@@ -17,12 +17,12 @@ matches = []
 
 async function findMatches() {
 
-  request('https://nbastreams.app', function (error, response, body) {
-    if (!error && response.statusCode == 200) {
+  try {
+    let res = await axios.get(`https://nbastreams.app`)
 
-      matches = []
+    matches = []
       var tableRegex = new RegExp("<table.*?matchTable.*?\/table>", "g")
-      var tables = tableRegex.exec(body)
+      var tables = tableRegex.exec(res.data)
       if (tables.length == 1) {
 
         const matchRegex = /<td>.*?\/td>.*?<\/td>/g
@@ -63,10 +63,9 @@ async function findMatches() {
           matches.push(match)
         }
       }
-    } else {
-      console.error('Failed to load matches')
-    }
-  })
+  } catch(error) {
+    console.log(`Failed to load matches: ${error}`)
+  }
 }
 
 app.get('/matches', async (req, res) => {
