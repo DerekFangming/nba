@@ -14,56 +14,41 @@ const app = express()
 app.use(bodyParser.json({limit: '100mb'}), cors())
 const port = '9004'
 
+const cityNames = {
+  'LA': 'Los Angeles'
+}
+
 matches = []
 
 async function findMatches() {
 
   try {
-    let res = await axios.get(`https://nbastreams.app`)
+    let res = await axios.get(`https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json`)
+    let games = res.data.scoreboard.games
 
     matches = []
-      var tableRegex = new RegExp("<table.*?matchTable.*?\/table>", "g")
-      var tables = tableRegex.exec(res.data)
-      if (tables.length == 1) {
+    for (let game of games) {
 
-        const matchRegex = /<td>.*?\/td>.*?<\/td>/g
-        const rawMatches = tables[0].matchAll(matchRegex)
-        
-        for (const m of rawMatches) {
-          let match = {teams:[]}
+      let match = {teams:[]}
+      let homeCity = cityNames[game.homeTeam.teamCity] ? cityNames[game.homeTeam.teamCity] : game.homeTeam.teamCity
+      let awayCity = cityNames[game.awayTeam.teamCity] ? cityNames[game.awayTeam.teamCity] : game.awayTeam.teamCity
+      match.teams.push({
+        name: homeCity + ' ' + game.homeTeam.teamName,
+        icon: `https://cdn.nba.com/logos/nba/${game.homeTeam.teamId}/primary/L/logo.svg`,
+        score: game.homeTeam.score
+      })
+      match.teams.push({
+        name: awayCity + ' ' + game.awayTeam.teamName,
+        icon: `https://cdn.nba.com/logos/nba/${game.awayTeam.teamId}/primary/L/logo.svg`,
+        score: game.awayTeam.score
+      })
 
-          let matchDetailRegex = new RegExp('matchItem--home.*?name">(.*?)<.*?(https.*?\.png).*?(https.*?\.png).*?-->(.*?)<', 'g')
-          var matchDetail = matchDetailRegex.exec(m[0])
-          match.teams.push({
-            name: matchDetail[1],
-            icon: matchDetail[2]
-          })
-          match.teams.push({
-            name: matchDetail[4],
-            icon: matchDetail[3]
-          })
-          
-          match.status = m[0].includes('LIVE') ? 'live' : m[0].includes('FT') ? 'ended' : 'upcoming'
+      match.id = game.gameId
+      match.status = game.gameStatusText.includes('Final') ? 'ended' : new Date(game.gameTimeUTC) <= new Date() ? 'live' : 'upcoming'
+      match.time = game.gameTimeUTC
 
-          var detailRegex = new RegExp("href=\"\/live\/(.*?)\"", "g")
-          var detail = detailRegex.exec(m[0])
-          var id = detail[1]
-          match.id = id
-
-          if (match.status != 'upcoming') {
-            let scoreRegex = new RegExp('matchItem--info">(.*?) - (.*?)<', 'g')
-            var score = scoreRegex.exec(m[0])
-            match.teams[0].score = score[1]
-            match.teams[1].score = score[2]
-          } else {
-            let timeRegex = new RegExp('<time>(.*?)<', 'g')
-            var time = timeRegex.exec(m[0])
-            match.time = time[1]
-          }
-
-          matches.push(match)
-        }
-      }
+      matches.push(match)
+    }
   } catch(error) {
     console.log(`Failed to load matches: ${error}`)
     throw error
@@ -77,7 +62,7 @@ app.get('/matches', async (req, res) => {
 app.get('/matches/:matchId', async (req, res) => {
   let matchDetail = {}
   let match = matches.find( m => m.id == req.params.matchId)
-  await nbaStreamsResolver.resolve(matchDetail, req.params.matchId)
+  // await nbaStreamsResolver.resolve(matchDetail, req.params.matchId)
   await weakStreamResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name)
   await techclipsResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name)
   res.send(matchDetail)

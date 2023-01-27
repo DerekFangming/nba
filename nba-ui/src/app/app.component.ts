@@ -125,14 +125,7 @@ export class AppComponent implements OnInit {
   }
 
   getStartTime(time: string) {
-    let times = time.split(':')
-    if (times.length != 2) return ''
-
-    let now = new Date()
-    now.setSeconds(0)
-    now.setUTCHours(parseInt(times[0]))
-    now.setUTCMinutes(parseInt(times[1]))
-    let timeStr = now.toLocaleTimeString()
+    let timeStr = new Date(time).toLocaleTimeString()
     let timeParts = timeStr.split(' ')
     return timeParts[0].slice(0, -3) + ' ' + timeParts[1]
   }

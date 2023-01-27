@@ -5,8 +5,8 @@ async function resolve(result, teamName1, teamName2) {
   if (result.weakStream != null) return
 
   console.log('Force resolving weakstream')
-  await attemptToResolve(result, teamName2, teamName1)
-  if (result.weakStream == null) await attemptToResolve(result, teamName1, teamName2)
+  await attemptToResolve(result, teamName1, teamName2)
+  if (result.weakStream == null) await attemptToResolve(result, teamName2, teamName1)
 }
 
 async function attemptToResolve(result, teamName1, teamName2) {
@@ -25,6 +25,7 @@ async function attemptToResolve(result, teamName1, teamName2) {
     embedUrl = embedUrl.substring(0, embedUrl.length - 1)
     result.weakStream = embedUrl
 
+    console.log('resolved ' + url)
   } catch(error) {
     console.log(`Failed to resolve ${url}, status code ${error}`)
   }
