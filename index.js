@@ -6,8 +6,9 @@ const techclipsResolver = require('./stream-resolver/techclips-resolver')
 const weakStreamResolver = require('./stream-resolver/weak-stream-resolver')
 const nbaStreamsResolver = require('./stream-resolver/nbastreams-app-resolver')
 const { v4: uuidv4 } = require('uuid')
-
 const axios = require('axios')
+
+require('log-timestamp')(function() { return '[' + new Date().toLocaleString() + '] %s' });
 
 const app = express()
 app.use(bodyParser.json({limit: '100mb'}), cors())
