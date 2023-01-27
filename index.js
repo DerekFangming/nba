@@ -45,9 +45,10 @@ async function findMatches() {
           
           match.status = m[0].includes('LIVE') ? 'live' : m[0].includes('FT') ? 'ended' : 'upcoming'
 
-          var detailRegex = new RegExp("href=\"\/(detail-match.*?)\"", "g")
+          var detailRegex = new RegExp("href=\"\/live\/(.*?)\"", "g")
           var detail = detailRegex.exec(m[0])
-          var id = detail[1].substring(detail[1].lastIndexOf("/") + 1, detail[1].length);
+          console.log(m[0])
+          var id = detail[1]//.substring(detail[1].lastIndexOf("/") + 1, detail[1].length);
           match.id = id
 
           if (match.status != 'upcoming') {
@@ -66,6 +67,7 @@ async function findMatches() {
       }
   } catch(error) {
     console.log(`Failed to load matches: ${error}`)
+    throw error
   }
 }
 
