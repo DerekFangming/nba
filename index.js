@@ -33,14 +33,14 @@ async function findMatches() {
       let homeCity = cityNames[game.homeTeam.teamCity] ? cityNames[game.homeTeam.teamCity] : game.homeTeam.teamCity
       let awayCity = cityNames[game.awayTeam.teamCity] ? cityNames[game.awayTeam.teamCity] : game.awayTeam.teamCity
       match.teams.push({
-        name: homeCity + ' ' + game.homeTeam.teamName,
-        icon: `https://cdn.nba.com/logos/nba/${game.homeTeam.teamId}/primary/L/logo.svg`,
-        score: game.homeTeam.score
-      })
-      match.teams.push({
         name: awayCity + ' ' + game.awayTeam.teamName,
         icon: `https://cdn.nba.com/logos/nba/${game.awayTeam.teamId}/primary/L/logo.svg`,
         score: game.awayTeam.score
+      })
+      match.teams.push({
+        name: homeCity + ' ' + game.homeTeam.teamName,
+        icon: `https://cdn.nba.com/logos/nba/${game.homeTeam.teamId}/primary/L/logo.svg`,
+        score: game.homeTeam.score
       })
 
       match.id = game.gameId
