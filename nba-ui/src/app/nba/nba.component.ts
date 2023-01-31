@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http'
-import { AfterViewInit, Component, OnInit } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { environment } from 'src/environments/environment'
 declare var $: any
 
@@ -21,6 +21,7 @@ export class NbaComponent implements OnInit {
 
   weakStream: string = null
   techClips: string = null
+  bestsolaris: string = null
   playingUrl: string = null
 
   infoTitle = ''
@@ -42,7 +43,7 @@ export class NbaComponent implements OnInit {
     this.loadMatches(true)
     setInterval(function() {
       that.loadMatches()
-    }, 15000)
+    }, 150000)
   }
 
   loadMatches(init = false) {
@@ -93,11 +94,12 @@ export class NbaComponent implements OnInit {
     let url = this.matches[playingIdx]['id']
     this.http.get<any>(environment.urlPrefix + 'matches/' + url).subscribe(res => {
       this.loadingMatcheDetails = false
-      if (res.weakStream || res.techClips) {
-        this.playingUrl = res.weakStream ? res.weakStream : res.techClips
+      if (res.weakStream || res.techClips || res.bestsolaris) {
+        this.playingUrl = res.weakStream ? res.weakStream : res.techClips? res.techClips : res.bestsolaris
         this.src = this.sanitizer.bypassSecurityTrustResourceUrl(this.playingUrl)
         this.weakStream = res.weakStream
         this.techClips = res.techClips
+        this.bestsolaris = res.bestsolaris
 
         this.router.navigate(
           [], 

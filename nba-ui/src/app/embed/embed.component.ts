@@ -18,7 +18,7 @@ export class EmbedComponent implements OnInit {
         console.log(paramMap.url)
         this.src = this.sanitizer.bypassSecurityTrustResourceUrl(paramMap.url)
       } else {
-        this.src = this.sanitizer.bypassSecurityTrustResourceUrl('https://bestsolaris.com/solaris.php?postid=29493')
+        this.src = this.sanitizer.bypassSecurityTrustResourceUrl('https://1stream.eu/game/orlando-magic-philadelphia-76ers-live-stream/559879')
         
       }
     })
