@@ -43,7 +43,7 @@ export class NbaComponent implements OnInit {
     this.loadMatches(true)
     setInterval(function() {
       that.loadMatches()
-    }, 150000)
+    }, 15000)
   }
 
   loadMatches(init = false) {
