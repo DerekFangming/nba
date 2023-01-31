@@ -43,13 +43,13 @@
 
         <div class="card border" [ngClass]="m['status'] == 'live' ? 'pointer border-primary border-3' : ''" >
           <div class="card-body pt-0">
-            <div (click)="loadStream(i)">
+            <div (click)="loadStream(m.id)">
               <div class="row">
                 <div class="col ps-0">
                   <span *ngIf="m['status'] == 'live'" class="badge rounded-pill bg-danger me-2"><i class="fa fa-circle me-1" aria-hidden="true"></i>比赛中</span>
                   <span *ngIf="m['status'] == 'upcoming'" class="badge rounded-pill bg-success me-2">即将开始</span>
                   <span *ngIf="m['status'] == 'ended'" class="badge rounded-pill bg-secondary me-2">已经结束</span>
-                  <span *ngIf="i == playingIdx" class="badge rounded-pill bg-danger"><i class="fa fa-play me-1" aria-hidden="true"></i>正在直播</span>
+                  <span *ngIf="m.id == streamId" class="badge rounded-pill bg-danger"><i class="fa fa-play me-1" aria-hidden="true"></i>正在直播</span>
                 </div>
               </div>
   
@@ -78,7 +78,7 @@
             </div>
             
 
-            <div *ngIf="!loadingMatcheDetails && i == playingIdx" class="row">
+            <div *ngIf="!loadingMatcheDetails && m.id == streamId" class="row">
               <div *ngIf="weakStream" class="col px-1">
                 <button type="button" class="btn btn-sm w-100" [ngClass]="weakStream == playingUrl ? 'btn-danger' : 'btn-outline-primary'"
                 (click)="playStream(weakStream)"><i  *ngIf="weakStream == playingUrl" class="fa fa-play me-1" aria-hidden="true"></i>
@@ -95,7 +95,7 @@
                 {{ bestsolaris == playingUrl ? '播放中' : '视频源 3' }}</button>
               </div>
             </div>
-            <div *ngIf="loadingMatcheDetails && i == playingIdx" class="row">
+            <div *ngIf="loadingMatcheDetails && m.id == streamId" class="row">
               <div class="col text-center">
                 <i class="fa fa-refresh fa-spin fa-2x"></i>
               </div>

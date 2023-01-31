@@ -17,7 +17,6 @@ export class NbaComponent implements OnInit {
   matches = []
   src: SafeResourceUrl
   streamId = ''
-  playingIdx = -1
 
   weakStream: string = null
   techClips: string = null
@@ -49,15 +48,22 @@ export class NbaComponent implements OnInit {
   loadMatches(init = false) {
     if (init) this.loadingMatches = true
     this.http.get<any>(environment.urlPrefix + 'matches').subscribe(res => {
-      if (init) this.loadingMatches = false
-      if (res.data) {
-        if (this.playingIdx != -1 && this.matches[this.playingIdx]['id'] != res.data[this.playingIdx]['id'] ) this.playingIdx = -1
-        this.matches = res.data
-      }
       
-      if (init && this.matches.length >= 1) {
-        let matchIdx = this.matches.findIndex(m => m.id == this.streamId)
-        if (matchIdx == -1) {
+      if (init) this.loadingMatches = false
+      
+      this.matches = res.data
+      if (this.matches.length == 0) {
+        this.infoTitle = '未找到比赛'
+        this.infoDescription = '当前没有比赛，请稍后再试。'
+        $("#infoModal").modal('show')
+        return
+      }
+
+      // Try to load stream ID if it's passed in from query param
+      if (this.streamId != '') {
+        let match = this.matches.find(m => m.id == this.streamId)
+        if (match == null || match.status != 'live') {
+          this.streamId = ''
           this.router.navigate(
             [], 
             {
@@ -65,15 +71,20 @@ export class NbaComponent implements OnInit {
               queryParams: {}, 
               queryParamsHandling: 'merge'
             })
-          this.loadStream(0)
-        } else {
-          this.loadStream(matchIdx)
         }
-      } else if (init) {
-        this.infoTitle = '未找到比赛'
-        this.infoDescription = '当前没有比赛，请稍后再试。'
-        $("#infoModal").modal('show')
       }
+
+      if (init) {
+        if (this.streamId == '') {
+          let match = this.matches.find(m => m.status == 'live')
+          if (match != null) {
+            this.loadStream(match.id)
+          }
+        } else {
+          this.loadStream(this.streamId)
+        }
+      }
+
 
     }, error => {
       if (init) this.loadingMatches = false
@@ -85,14 +96,14 @@ export class NbaComponent implements OnInit {
     })
   }
 
-  loadStream(playingIdx: number) {
-    if (this.matches[playingIdx]['status'] != 'live') return
+  loadStream(streamId: string) {
+    let match = this.matches.find(m => m.id == streamId)
+    if (match == null || match.status != 'live') return
 
     this.src = null
     this.loadingMatcheDetails = true
-    this.playingIdx = playingIdx
-    let url = this.matches[playingIdx]['id']
-    this.http.get<any>(environment.urlPrefix + 'matches/' + url).subscribe(res => {
+    this.streamId = streamId
+    this.http.get<any>(environment.urlPrefix + 'matches/' + streamId).subscribe(res => {
       this.loadingMatcheDetails = false
       if (res.weakStream || res.techClips || res.bestsolaris) {
         this.playingUrl = res.weakStream ? res.weakStream : res.techClips? res.techClips : res.bestsolaris
@@ -105,7 +116,7 @@ export class NbaComponent implements OnInit {
           [], 
           {
             relativeTo: this.route,
-            queryParams: {streamId: url}, 
+            queryParams: {streamId: streamId}, 
             queryParamsHandling: 'merge'
           })
       } else {
