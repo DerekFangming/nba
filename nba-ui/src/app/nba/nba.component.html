@@ -7,8 +7,7 @@
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <a class="nav-link me-2 active" aria-current="page" [routerLink]="['/']">NBA</a>
-        <a class="nav-link me-2" [routerLink]="['/interview-scheduler']">其他直播</a>
-        <a class="nav-link me-2" [routerLink]="['/traffic-control']">自定义</a>
+        <a class="nav-link me-2" [routerLink]="['/other-streams']">其他直播</a>
       </div>
     </div>
   </div>
@@ -39,7 +38,7 @@
     </div>
 
     <div class="col-lg-2 col-md-12 mt-3 overflow-auto" [ngStyle]="getMenuHeight()">
-      <div class="row mb-3" *ngFor="let m of matches; let i = index">
+      <div class="row mb-3" *ngFor="let m of matches">
 
         <div class="card border" [ngClass]="m['status'] == 'live' ? 'pointer border-primary border-3' : ''" >
           <div class="card-body pt-0">

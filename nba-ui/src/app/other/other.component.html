@@ -1,1 +1,94 @@
-<p>other works!</p>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container">
+    <a class="navbar-brand" href="#">直播</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link me-2" aria-current="page" [routerLink]="['/']">NBA</a>
+        <a class="nav-link me-2 active" [routerLink]="['/other-streams']">其他直播</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid">
+
+  <div *ngIf="loadingMatches" class="row mt-4">
+    <div class="col text-center mt-4">
+      <i class="fa fa-refresh fa-spin fa-4x mt-4"></i>
+    </div>
+  </div>
+
+  <div *ngIf="!loadingMatches" class="row">
+
+    <div class="col-lg-10 col-md-12" [ngStyle]="getVidHeight()" >
+      <iframe *ngIf="src" sandbox="allow-scripts allow-same-origin" style="height: 100%;width: 100%;" [src]="src"
+        allowfullscreen scrolling=no allowtransparency></iframe>
+      <div *ngIf="src == null" class="border border-2 mt-3 text-center justify-content-center" style="height: 100%;width: 100%;display:flex;align-items:center;">
+        <div>
+          <p class="display-6 mt-5">当前没有直播</p>
+          <p class="lead">比赛开始后点击右方任意比赛开始直播</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-2 col-md-12 mt-3 overflow-auto" [ngStyle]="getMenuHeight()">
+      <div class="row mb-3" *ngFor="let m of matches">
+        <div class="card border" [ngClass]="m.link == playingUrl ? 'border-primary border-3' : ''" >
+          <div class="card-body pt-0">
+            <div>
+              <div class="row">
+                <div class="col ps-0">
+                  <span class="badge rounded-pill bg-danger me-2"><i class="fa fa-circle me-1" aria-hidden="true"></i>比赛中</span>
+                  <span *ngIf="m.link == playingUrl" class="badge rounded-pill bg-danger"><i class="fa fa-play me-1" aria-hidden="true"></i>正在直播</span>
+                </div>
+              </div>
+  
+              <div class="row mt-2">
+                <div class="col text-center">
+                  <p class="lead">{{ m.title }}</p>
+                </div>
+              </div>
+            </div>
+            
+
+            <div class="row">
+              <div class="col">
+                <button type="button" class="btn btn-sm w-100" [ngClass]="m.link == playingUrl ? 'btn-danger' : 'btn-outline-primary'" (click)="playStream(m.link)">
+                  <i *ngIf="m.link == playingUrl" class="fa fa-play me-1" aria-hidden="true"></i>
+                  {{ m.link == playingUrl ? '播放中' : '点击播放' }}
+                </button>
+              </div>
+              
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+
+<div class="modal fade" id="infoModal" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{infoTitle}}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col">
+            <p class="lead">{{infoDescription}}</p>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">确定</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -20,6 +20,7 @@ const cityNames = {
 }
 
 matches = []
+otherMatches = []
 
 async function findMatches() {
 
@@ -57,17 +58,27 @@ async function findMatches() {
 }
 
 app.get('/matches', async (req, res) => {
-  res.send({data: matches})
+  res.send(matches)
 })
 
 app.get('/matches/:matchId', async (req, res) => {
   let matchDetail = {}
   let match = matches.find( m => m.id == req.params.matchId)
-  // await nbaStreamsResolver.resolve(matchDetail, req.params.matchId)
-  await weakStreamResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name)
-  await techclipsResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name)
-  await bestsolarisResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name)
+  if (match != null) {
+    await weakStreamResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name)
+    await techclipsResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name)
+    await bestsolarisResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name)
+  }
   res.send(matchDetail)
+})
+
+app.get('/other-matches', async (req, res) => {
+  res.send(otherMatches)
+})
+
+app.post('/other-matches', async (req, res) => {
+  otherMatches = req.body
+  res.send(otherMatches)
 })
 
 app.get('/test', async (req, res) => {

@@ -7,7 +7,7 @@ import { OtherComponent } from './other/other.component';
 
 const routes: Routes = [
   { path: '', component: NbaComponent},
-  { path: 'others', component: OtherComponent},
+  { path: 'other-streams', component: OtherComponent},
   { path: 'embed', component: EmbedComponent},
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ];

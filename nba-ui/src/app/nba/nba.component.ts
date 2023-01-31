@@ -51,7 +51,7 @@ export class NbaComponent implements OnInit {
       
       if (init) this.loadingMatches = false
       
-      this.matches = res.data
+      this.matches = res
       if (this.matches.length == 0) {
         this.infoTitle = '未找到比赛'
         this.infoDescription = '当前没有比赛，请稍后再试。'
@@ -89,8 +89,15 @@ export class NbaComponent implements OnInit {
     }, error => {
       if (init) this.loadingMatches = false
       if (init) {
-        this.infoTitle = '系统错误'
-        this.infoDescription = error
+        this.infoTitle = '无法加载比赛'
+        if (error.status != null && error.status != 200) {
+          this.infoDescription = '无法连接到服务器'
+        } else if (error.message) {
+          this.infoDescription = error.message
+        } else {
+          console.log(error)
+          this.infoDescription = '系统错误'
+        }
         $("#infoModal").modal('show')
       }
     })
