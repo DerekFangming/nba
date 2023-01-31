@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-embed',
@@ -9,19 +9,26 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class EmbedComponent implements OnInit {
 
+  embedUrl = ''
   src: SafeResourceUrl
-  constructor(private route: ActivatedRoute, private sanitizer: DomSanitizer) { }
+  constructor(private route: ActivatedRoute, private sanitizer: DomSanitizer, private router: Router) { }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe( paramMap => {
       if (paramMap.url) {
-        console.log(paramMap.url)
         this.src = this.sanitizer.bypassSecurityTrustResourceUrl(paramMap.url)
-      } else {
-        this.src = this.sanitizer.bypassSecurityTrustResourceUrl('https://1stream.eu/game/orlando-magic-philadelphia-76ers-live-stream/559879')
-        
       }
     })
+  }// https://1stream.eu/game/orlando-magic-philadelphia-76ers-live-stream/559879
+
+  generateEmbed() {
+    this.router.navigate(
+      [], 
+      {
+        relativeTo: this.route,
+        queryParams: {url: this.embedUrl}, 
+        queryParamsHandling: 'merge'
+      })
   }
 
 }

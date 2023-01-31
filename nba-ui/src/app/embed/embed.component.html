@@ -1,2 +1,15 @@
-<iframe *ngIf="src" style="height: 900px;width: 100%;" [src]="src" 
-allowfullscreen scrolling=no allowtransparency></iframe>
+<div class="row w-100" style="height: 98vh;">
+  <div *ngIf="src" class="col">
+    <iframe *ngIf="src" sandbox="allow-scripts allow-same-origin" [src]="src" style="height: 100%;width: 100%;"
+    allowfullscreen scrolling=no allowtransparency></iframe>
+  </div>
+
+  <div *ngIf="!src" class="col-8 offset-2">
+    <div *ngIf="src == null" class="justify-content-center" style="height: 100%;width: 100%;display:flex;align-items:center;">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="输入直播iframe地址" aria-label="输入直播iframe地址" [(ngModel)]="embedUrl" (keyup.enter)="generateEmbed()">
+        <button class="btn btn-outline-secondary" type="button" (click)="generateEmbed()">Go</button>
+      </div>
+    </div>
+  </div>
+</div>

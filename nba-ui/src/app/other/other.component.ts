@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
 declare var $: any
@@ -9,11 +9,12 @@ declare var $: any
   templateUrl: './other.component.html',
   styleUrls: ['./other.component.css']
 })
-export class OtherComponent implements OnInit {
+export class OtherComponent implements OnInit, OnDestroy {
 
   matches = []
   src: SafeResourceUrl
   loadingMatches = false
+  timerInterval: any
 
   infoTitle = ''
   infoDescription = ''
@@ -24,10 +25,14 @@ export class OtherComponent implements OnInit {
   ngOnInit(): void {
     let that = this
     this.loadMatches(true)
-    setInterval(function() {
+    this.timerInterval = setInterval(function() {
       that.loadMatches()
     }, 15000)
   }
+
+  ngOnDestroy() {
+    clearInterval(this.timerInterval);
+ }
 
   loadMatches(init = false) {
     if (init) this.loadingMatches = true
@@ -36,7 +41,7 @@ export class OtherComponent implements OnInit {
       if (init) this.loadingMatches = false
       
       this.matches = res
-      if (this.matches.length == 0) {
+      if (this.matches.length == 0 && init) {
         this.infoTitle = '未找到比赛'
         this.infoDescription = '当前没有比赛，请稍后再试。'
         $("#infoModal").modal('show')
