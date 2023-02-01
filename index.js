@@ -8,6 +8,7 @@ const bestsolarisResolver = require('./stream-resolver/bestsolaris-resolver')
 const nbaStreamsResolver = require('./stream-resolver/nbastreams-app-resolver')
 const { v4: uuidv4 } = require('uuid')
 const axios = require('axios')
+const fs = require('fs')
 
 require('log-timestamp')(function() { return '[' + new Date().toLocaleString() + '] %s' });
 
