@@ -90,6 +90,12 @@ app.get('/test', async (req, res) => {
 
 app.use(express.static(path.join(__dirname, 'public')))
 
+app.get('*', function (req, res) {
+  fs.readFile(__dirname + '/public/index.html', 'utf8', (err, text) => {
+    res.send(text)
+  })
+})
+
 app.listen(port, () => {
   console.log(`NBA app started on port ${port}`)
 })
