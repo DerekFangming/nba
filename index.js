@@ -6,7 +6,7 @@ const techclipsResolver = require('./stream-resolver/techclips-resolver')
 const weakStreamResolver = require('./stream-resolver/weak-stream-resolver')
 const bestsolarisResolver = require('./stream-resolver/bestsolaris-resolver')
 const nbaStreamsResolver = require('./stream-resolver/nbastreams-app-resolver')
-const { v4: uuidv4 } = require('uuid')
+const { v4: uuidv4, NIL } = require('uuid')
 const axios = require('axios')
 const fs = require('fs')
 const ExpiryMap = require('expiry-map')
@@ -20,6 +20,8 @@ const port = '9004'
 const cityNames = {
   'LA': 'Los Angeles'
 }
+
+refreshInterval = 60000
 
 matches = []
 matchDetailCache = new ExpiryMap(12 * 60 * 60 * 1000) // 12 hour
@@ -50,10 +52,18 @@ async function findMatches() {
 
       match.id = game.gameId
       match.status = game.gameStatusText.includes('Final') ? 'ended' : new Date(game.gameTimeUTC) <= new Date() ? 'live' : 'upcoming'
+      match.readableStatus = game.gameStatusText
       match.time = game.gameTimeUTC
 
       matches.push(match)
     }
+
+    if (matches.find(m => m.status == 'live') != null) {
+      setTimeout(function() { findMatches() }, 15000)
+    } else {
+      setTimeout(function() { findMatches() }, 60000)
+    }
+
   } catch(error) {
     console.log(`Failed to load matches: ${error}`)
     throw error
@@ -115,6 +125,6 @@ app.listen(port, () => {
 })
 
 findMatches()
-setInterval(function() {
-  findMatches()
-}, 60000)
+// setInterval(function() {
+//   findMatches()
+// }, refreshInterval)

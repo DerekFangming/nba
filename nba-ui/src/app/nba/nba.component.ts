@@ -163,6 +163,18 @@ export class NbaComponent implements OnInit, OnDestroy {
     return window.innerWidth >= 960 ? {height: '90vh'} : {height: '55vh'}
   }
 
+  parseStatus(status: string) {
+    if (status == 'PPD') {
+      return '延迟'
+    } else if (status == 'Half') {
+      return '中场'
+    } else if (status.includes('pm')) {
+      return ''
+    }
+
+    return status
+  }
+
   showManual () {
     $("#manualModal").modal('show')
   }
