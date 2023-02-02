@@ -172,6 +172,8 @@ export class NbaComponent implements OnInit, OnDestroy {
       return '推迟'
     } else if (status == 'Half') {
       return '中场'
+    } else if (status.includes('OT')) {
+      return '加时'
     } else if (status.includes('pm') || status == 'Final') {
       return ''
     }
