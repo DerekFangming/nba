@@ -185,4 +185,8 @@ export class NbaComponent implements OnInit, OnDestroy {
     $("#manualModal").modal('show')
   }
 
+  refreshStream() {
+    if (this.playingUrl != null) this.playStream(this.playingUrl)
+  }
+
 }
