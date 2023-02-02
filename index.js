@@ -9,6 +9,7 @@ const nbaStreamsResolver = require('./stream-resolver/nbastreams-app-resolver')
 const { v4: uuidv4 } = require('uuid')
 const axios = require('axios')
 const fs = require('fs')
+const ExpiryMap = require('expiry-map')
 
 require('log-timestamp')(function() { return '[' + new Date().toLocaleString() + '] %s' });
 
@@ -21,6 +22,7 @@ const cityNames = {
 }
 
 matches = []
+matchDetailCache = new ExpiryMap(12 * 60 * 60 * 1000) // 12 hour
 otherMatches = []
 
 async function findMatches() {
@@ -63,13 +65,19 @@ app.get('/matches', async (req, res) => {
 })
 
 app.get('/matches/:matchId', async (req, res) => {
-  let matchDetail = {}
+  let matchDetail = matchDetailCache.get(req.params.matchId)
+  if (matchDetail == null) matchDetail = {}
+
   let match = matches.find( m => m.id == req.params.matchId)
   if (match != null) {
+    console.log(`====================================================================`)
+    console.log(`Loading matches: ${match.teams[0].name} vs ${match.teams[1].name}`)
+    console.log(`====================================================================`)
     await weakStreamResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name)
     await techclipsResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name)
     await bestsolarisResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name)
   }
+  matchDetailCache.set(req.params.matchId, matchDetail)
   res.send(matchDetail)
 })
 
@@ -80,6 +88,11 @@ app.get('/other-matches', async (req, res) => {
 app.post('/other-matches', async (req, res) => {
   otherMatches = req.body
   res.send(otherMatches)
+})
+
+app.get('/clear-cache', async (req, res) => {
+  matchDetailCache = new ExpiryMap(12 * 60 * 60 * 1000)
+  res.send({})
 })
 
 app.get('/test', async (req, res) => {

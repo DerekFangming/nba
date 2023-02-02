@@ -5,13 +5,15 @@ async function resolve(result, teamName1, teamName2) {
   if (result.weakStream != null) return
 
   console.log('Force resolving weakstream')
-  await attemptToResolve(result, teamName1, teamName2)
-  if (result.weakStream == null) await attemptToResolve(result, teamName2, teamName1)
+  await attemptToResolve(result, teamName2, teamName1)
+  if (result.weakStream == null) await attemptToResolve(result, teamName1, teamName2)
+  if (result.weakStream == null) await attemptToResolve(result, teamName2, teamName1, '-2')
+  if (result.weakStream == null) await attemptToResolve(result, teamName1, teamName2, '-2')
 }
 
-async function attemptToResolve(result, teamName1, teamName2) {
+async function attemptToResolve(result, teamName1, teamName2, suffix = '') {
   let url = 'https://weakstream.org/nba-stream/' +
-    (teamName1.split(' ').join('-') + '-vs-' + teamName2.split(' ').join('-')).toLowerCase()
+    (teamName1.split(' ').join('-') + '-vs-' + teamName2.split(' ').join('-')).toLowerCase() + suffix
   try {
     let res = await axios.get(url)
 
