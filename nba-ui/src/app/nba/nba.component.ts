@@ -163,4 +163,8 @@ export class NbaComponent implements OnInit, OnDestroy {
     return window.innerWidth >= 960 ? {height: '90vh'} : {height: '55vh'}
   }
 
+  showManual () {
+    $("#manualModal").modal('show')
+  }
+
 }
