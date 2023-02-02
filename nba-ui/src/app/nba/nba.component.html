@@ -43,46 +43,46 @@
     <div class="col-lg-2 col-md-12 mt-3 overflow-auto" [ngStyle]="getMenuHeight()">
       <div class="row mb-3" *ngFor="let m of matches">
 
-        <div class="card border" [ngClass]="m['status'] == 'live' ? 'pointer border-primary border-3' : ''" >
+        <div class="card border px-0" [ngClass]="getStatusLabel(m) == 'live' ? 'pointer border-primary border-3' : ''" >
           <div class="card-body pt-0">
             <div (click)="loadStream(m.id)">
               <div class="row">
                 <div class="col px-0">
-                  <span *ngIf="m['status'] == 'live'" class="badge rounded-pill bg-danger me-2"><i class="fa fa-circle me-1" aria-hidden="true"></i>比赛中</span>
-                  <span *ngIf="m['status'] == 'upcoming'" class="badge rounded-pill bg-success me-2">即将开始</span>
-                  <span *ngIf="m['status'] == 'ended'" class="badge rounded-pill bg-secondary me-2">已经结束</span>
+                  <span *ngIf="getStatusLabel(m) == 'live'" class="badge rounded-pill bg-danger me-2"><i class="fa fa-circle me-1" aria-hidden="true"></i>比赛中</span>
+                  <span *ngIf="getStatusLabel(m) == 'upcoming'" class="badge rounded-pill bg-success me-2">即将开始</span>
+                  <span *ngIf="getStatusLabel(m) == 'ended'" class="badge rounded-pill bg-secondary me-2">已经结束</span>
                   <span *ngIf="m.id == streamId" class="badge rounded-pill bg-danger"><i class="fa fa-play me-1" aria-hidden="true"></i>正在直播</span>
 
-                  <p class="lead float-end mb-0 text-success"><b>{{ parseStatus(m['readableStatus']) }}</b></p>
-                </div>
-              </div>
-  
-              <div class="row mt-2">
-                <div class="col-5 text-center px-0">
-                  <img width="80" height="80" [src]="m['teams'][0]['icon']">
-                  <p class="mt-2 mb-0">{{ m['teams'][0]['name'] }}</p>
-                </div>
-                <div class="col-2 text-center px-0">
-                  <p class="lead mt-4">VS</p>
-                </div>
-                <div class="col-5 text-center px-0">
-                  <img width="80" height="80" [src]="m['teams'][1]['icon']">
-                  <p class="mt-2 mb-0">{{ m['teams'][1]['name'] }}</p>
+                  <p class="lead float-end mb-0 text-success"><b>{{ getStatusDetail(m['status']) }}</b></p>
                 </div>
               </div>
   
               <div class="row">
-                <div *ngIf="m['status'] != 'upcoming'" class="col text-center">
-                  <p class="lead mb-0"><b class="text-success"> {{ m['teams'][0]['score'] }}</b> : <b class="text-success"> {{ m['teams'][1]['score'] }}</b></p>
+                <div class="col-4 text-center px-0">
+                  <img width="80" height="80" [src]="m['teams'][0]['icon']">
+                  <p class="mb-0">{{ m['teams'][0]['name'] }}</p>
                 </div>
-                <div *ngIf="m['status'] == 'upcoming'" class="col text-center">
-                  <p class="lead mb-0"><b class="text-success"> {{ getStartTime(m['time']) }}</b></p>
+                <div class="col-4 text-center px-0">
+                  <p class="lead mt-4">VS</p>
+
+                  <div *ngIf="getStatusLabel(m) != 'upcoming'" class="col text-center mt-4">
+                    <p class="lead mb-0"><b class="text-success"> {{ m['teams'][0]['score'] }}</b> : <b class="text-success"> {{ m['teams'][1]['score'] }}</b></p>
+                  </div>
+                  <div *ngIf="getStatusLabel(m) == 'upcoming'" class="col text-center mt-4">
+                    <p class="lead mb-0"><b class="text-success"> {{ getStartTime(m['time']) }}</b></p>
+                  </div>
+                </div>
+                <div class="col-4 text-center px-0">
+                  <img width="80" height="80" [src]="m['teams'][1]['icon']">
+                  <div class="team-name">
+                    <p class="mb-0">{{ m['teams'][1]['name'] }}</p>
+                  </div>
                 </div>
               </div>
             </div>
             
 
-            <div *ngIf="!loadingMatcheDetails && m.id == streamId" class="row">
+            <div *ngIf="!loadingMatcheDetails && m.id == streamId" class="row mt-2">
               <div *ngIf="weakStream" class="col px-1">
                 <button type="button" class="btn btn-sm w-100" [ngClass]="weakStream == playingUrl ? 'btn-danger' : 'btn-outline-primary'"
                 (click)="playStream(weakStream)"><i  *ngIf="weakStream == playingUrl" class="fa fa-play me-1" aria-hidden="true"></i>

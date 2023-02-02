@@ -51,8 +51,7 @@ async function findMatches() {
       })
 
       match.id = game.gameId
-      match.status = game.gameStatusText.includes('Final') ? 'ended' : new Date(game.gameTimeUTC) <= new Date() ? 'live' : 'upcoming'
-      match.readableStatus = game.gameStatusText
+      match.status = game.gameStatusText
       match.time = game.gameTimeUTC
 
       matches.push(match)

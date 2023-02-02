@@ -67,7 +67,7 @@ export class NbaComponent implements OnInit, OnDestroy {
       // Try to load stream ID if it's passed in from query param
       if (this.streamId != '') {
         let match = this.matches.find(m => m.id == this.streamId)
-        if (match == null || match.status != 'live') {
+        if (match == null || this.getStatusLabel(match) != 'live') {
           this.streamId = ''
           this.router.navigate(
             [], 
@@ -81,7 +81,7 @@ export class NbaComponent implements OnInit, OnDestroy {
 
       if (init) {
         if (this.streamId == '') {
-          let match = this.matches.find(m => m.status == 'live')
+          let match = this.matches.find(m => this.getStatusLabel(m) == 'live')
           if (match != null) {
             this.loadStream(match.id)
           }
@@ -110,7 +110,7 @@ export class NbaComponent implements OnInit, OnDestroy {
 
   loadStream(streamId: string) {
     let match = this.matches.find(m => m.id == streamId)
-    if (match == null || match.status != 'live') return
+    if (match == null || this.getStatusLabel(match) != 'live') return
 
     this.src = null
     this.loadingMatcheDetails = true
@@ -163,12 +163,16 @@ export class NbaComponent implements OnInit, OnDestroy {
     return window.innerWidth >= 960 ? {height: '90vh'} : {height: '55vh'}
   }
 
-  parseStatus(status: string) {
+  getStatusLabel(match: any) {
+    return match.status.includes('Final') ? 'ended' :  match.status == 'PPD' ? 'upcoming' : new Date(match.time) <= new Date() ? 'live' : 'upcoming'
+  }
+
+  getStatusDetail(status: string) {
     if (status == 'PPD') {
-      return '延迟'
+      return '推迟'
     } else if (status == 'Half') {
       return '中场'
-    } else if (status.includes('pm')) {
+    } else if (status.includes('pm') || status == 'Final') {
       return ''
     }
 
