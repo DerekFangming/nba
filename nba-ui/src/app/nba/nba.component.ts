@@ -176,6 +176,8 @@ export class NbaComponent implements OnInit, OnDestroy {
       return '加时'
     } else if (status.includes('pm') || status == 'Final') {
       return ''
+    } else if (status.startsWith('End ')) {
+      return status.replace('End ', '') + ' 结束'
     }
 
     return status
