@@ -17,7 +17,7 @@ async function resolve(result, teamName1, teamName2) {
       let teamRes2 = match[3].toLowerCase().trim()
 
       if ((teamName1.toLowerCase().includes(teamRes1) && teamName2.toLowerCase().includes(teamRes2) ) || (
-        teamName1.toLowerCase().includes(teamRes2) || teamName2.toLowerCase().includes(teamRes1))) {
+        teamName1.toLowerCase().includes(teamRes2) && teamName2.toLowerCase().includes(teamRes1))) {
           result.techClips = `https://techclips.net/clip/${match[1]}.html`
           return
         }
