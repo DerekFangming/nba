@@ -4,7 +4,7 @@ const axios = require('axios')
 async function resolve(result, teamName1, teamName2) {
   if (result.weakStream != null) return
 
-  console.log('Force resolving weakstream')
+  console.log('resolving weakstream')
   await attemptToResolve(result, teamName2, teamName1)
   if (result.weakStream == null) await attemptToResolve(result, teamName1, teamName2)
   if (result.weakStream == null) await attemptToResolve(result, teamName2, teamName1, '-2')

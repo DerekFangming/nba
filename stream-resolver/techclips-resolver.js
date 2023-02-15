@@ -4,12 +4,12 @@ const axios = require('axios')
 async function resolve(result, teamName1, teamName2) {
   if (result.techClips != null) return
 
-  console.log('Force resolving techClips')
+  console.log('Resolving techClips')
   try {
     let res = await axios.get('https://techclips.net/schedule/nbastreams/')
 
     // Find url
-    const matchRegex = /href="\/.*?\/(.*?)\/".*?>(.*?) @ (.*?)</g
+    const matchRegex = /href="\/.*?\/(.*?)\/".*?>(.*?) – (.*?)</g
     const matches = res.data.matchAll(matchRegex)
     
     for (const match of matches) {
