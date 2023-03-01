@@ -29,11 +29,13 @@ otherMatches = []
 
 async function findMatches() {
 
+  let requestGoesThrough = false
   try {
     let res = await axios.get(`https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json`)
     let games = res.data.scoreboard.games
 
     matches = []
+    requestGoesThrough = true
     for (let game of games) {
 
       let match = {teams:[]}
@@ -57,15 +59,14 @@ async function findMatches() {
       matches.push(match)
     }
 
-    if (matches.find(m => m.status == 'live') != null) {
-      setTimeout(function() { findMatches() }, 15000)
-    } else {
-      setTimeout(function() { findMatches() }, 60000)
-    }
-
   } catch(error) {
-    console.log(`Failed to load matches: ${error}`)
-    throw error
+    console.error(`Failed to load matches: ${error}`)
+  }
+
+  if (requestGoesThrough && matches.find(m => m.status == 'live') != null) {
+    setTimeout(function() { findMatches() }, 15000)
+  } else {
+    setTimeout(function() { findMatches() }, 60000)
   }
 }
 
@@ -124,6 +125,3 @@ app.listen(port, () => {
 })
 
 findMatches()
-// setInterval(function() {
-//   findMatches()
-// }, refreshInterval)
