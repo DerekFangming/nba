@@ -8,7 +8,7 @@ async function resolve(result, teamName1, teamName2) {
   try {
     let res = await axios.get('https://techclips.net/schedule/nbastreams/')
     // Find url
-    const matchRegex = /href="\/(202.*?)".*?2">(.*?)<\//g
+    const matchRegex = /href="\/202.\/(.*?)".*?2">(.*?)<\//g
     const matches = res.data.replace(/(\r\n|\n|\r)/gm, '').matchAll(matchRegex)
     
     for (const match of matches) {
