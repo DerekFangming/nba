@@ -67,7 +67,7 @@ export class NbaComponent implements OnInit, OnDestroy {
       // Try to load stream ID if it's passed in from query param
       if (this.streamId != '') {
         let match = this.matches.find(m => m.id == this.streamId)
-        if (match == null || this.getStatusLabel(match) != 'live') {
+        if (match == null || this.getStatusLabel(match) == 'upcoming') {
           this.streamId = ''
           this.router.navigate(
             [], 
@@ -110,7 +110,7 @@ export class NbaComponent implements OnInit, OnDestroy {
 
   loadStream(streamId: string) {
     let match = this.matches.find(m => m.id == streamId)
-    if (match == null || this.getStatusLabel(match) != 'live') return
+    if (match == null || this.getStatusLabel(match) == 'upcoming') return
 
     this.src = null
     this.loadingMatcheDetails = true
