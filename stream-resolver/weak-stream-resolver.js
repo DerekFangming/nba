@@ -25,7 +25,7 @@ async function attemptToResolve(result, teamName1, teamName2, suffix = '') {
     var embed = embedRegex.exec(iframe[0])
     let embedUrl = embed[0]
     embedUrl = embedUrl.substring(0, embedUrl.length - 1)
-    result.weakStream = embedUrl
+    result.weakStream = url
 
     console.log('resolved ' + url)
   } catch(error) {
