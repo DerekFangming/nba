@@ -83,9 +83,11 @@ app.get('/matches/:matchId', async (req, res) => {
     console.log(`====================================================================`)
     console.log(`Loading matches: ${match.teams[0].name} vs ${match.teams[1].name}`)
     console.log(`====================================================================`)
-    await weakStreamResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name)
-    await techclipsResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name)
-    await bestsolarisResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name)
+    await Promise.all([
+      weakStreamResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
+      techclipsResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
+      bestsolarisResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name)
+    ])
   }
   matchDetailCache.set(req.params.matchId, matchDetail)
   res.send(matchDetail)
