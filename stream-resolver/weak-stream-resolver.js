@@ -12,19 +12,19 @@ async function resolve(result, teamName1, teamName2) {
 }
 
 async function attemptToResolve(result, teamName1, teamName2, suffix = '') {
-  let url = 'https://weakstream.org/nba-stream/' +
+  let url = 'https://weakspell.org/nba-stream/' +
     (teamName1.split(' ').join('-') + '-vs-' + teamName2.split(' ').join('-')).toLowerCase() + suffix
   try {
     let res = await axios.get(url)
 
     // Find url
-    var iframeRegex = new RegExp("&lt;iframe.*?\/iframe&gt;", "g")
-    var iframe = iframeRegex.exec(res.data)
+    // var iframeRegex = new RegExp("&lt;iframe.*?\/iframe&gt;", "g")
+    // var iframe = iframeRegex.exec(res.data)
 
-    var embedRegex = new RegExp('https:\/\/weakstream.org.*?"', 'g')
-    var embed = embedRegex.exec(iframe[0])
-    let embedUrl = embed[0]
-    embedUrl = embedUrl.substring(0, embedUrl.length - 1)
+    // var embedRegex = new RegExp('https:\/\/weakstream.org.*?"', 'g')
+    // var embed = embedRegex.exec(iframe[0])
+    // let embedUrl = embed[0]
+    // embedUrl = embedUrl.substring(0, embedUrl.length - 1)
     result.weakStream = url
 
     console.log('resolved ' + url)
