@@ -86,20 +86,25 @@
             
 
             <div *ngIf="!loadingMatcheDetails && m.id == streamId" class="row mt-2">
-              <div *ngIf="weakStream" class="col px-1">
-                <button type="button" class="btn btn-sm w-100" [ngClass]="weakStream == playingUrl ? 'btn-danger' : 'btn-outline-primary'"
-                (click)="playStream(weakStream)"><i  *ngIf="weakStream == playingUrl" class="fa fa-play me-1" aria-hidden="true"></i>
-                {{ weakStream == playingUrl ? '播放中' : '直播源 1' }}</button>
+              <div *ngIf="gmrStream" class="col px-1">
+                <button type="button" class="btn btn-sm w-100 px-0" [ngClass]="gmrStream == playingUrl ? 'btn-danger' : 'btn-outline-primary'"
+                (click)="playStream(gmrStream)"><i  *ngIf="gmrStream == playingUrl" class="fa fa-play" aria-hidden="true"></i>
+                {{ gmrStream == playingUrl ? '播放中' : '直播 1' }}</button>
               </div>
               <div *ngIf="techClips" class="col px-1">
-                <button type="button" class="btn btn-sm w-100" [ngClass]="techClips == playingUrl ? 'btn-danger' : 'btn-outline-primary'"
+                <button type="button" class="btn btn-sm w-100 px-0" [ngClass]="techClips == playingUrl ? 'btn-danger' : 'btn-outline-primary'"
                 (click)="playStream(techClips)"><i  *ngIf="techClips == playingUrl" class="fa fa-play me-1" aria-hidden="true"></i>
-                {{ techClips == playingUrl ? '播放中' : '直播源 2' }}</button>
+                {{ techClips == playingUrl ? '播放中' : '直播 2' }}</button>
               </div>
               <div *ngIf="bestsolaris" class="col px-1">
-                <button type="button" class="btn btn-sm w-100" [ngClass]="bestsolaris == playingUrl ? 'btn-danger' : 'btn-outline-primary'"
+                <button type="button" class="btn btn-sm w-100 px-0" [ngClass]="bestsolaris == playingUrl ? 'btn-danger' : 'btn-outline-primary'"
                 (click)="playStream(bestsolaris)"><i  *ngIf="bestsolaris == playingUrl" class="fa fa-play me-1" aria-hidden="true"></i>
-                {{ bestsolaris == playingUrl ? '播放中' : '直播源 3' }}</button>
+                {{ bestsolaris == playingUrl ? '播放中' : '直播 3' }}</button>
+              </div>
+              <div *ngIf="weakStream" class="col px-1">
+                <button type="button" class="btn btn-sm w-100 px-0" [ngClass]="weakStream == playingUrl ? 'btn-danger' : 'btn-outline-primary'"
+                (click)="playStream(weakStream)"><i  *ngIf="weakStream == playingUrl" class="fa fa-play me-1" aria-hidden="true"></i>
+                {{ weakStream == playingUrl ? '播放中' : '直播 4' }}</button>
               </div>
             </div>
             <div *ngIf="loadingMatcheDetails && m.id == streamId" class="row">

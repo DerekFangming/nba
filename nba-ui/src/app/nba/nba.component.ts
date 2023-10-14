@@ -22,6 +22,8 @@ export class NbaComponent implements OnInit, OnDestroy {
   weakStream: string = null
   techClips: string = null
   bestsolaris: string = null
+  gmrStream: string = null
+
   playingUrl: string = null
 
   infoTitle = ''
@@ -117,12 +119,13 @@ export class NbaComponent implements OnInit, OnDestroy {
     this.streamId = streamId
     this.http.get<any>(environment.urlPrefix + 'matches/' + streamId).subscribe(res => {
       this.loadingMatcheDetails = false
-      if (res.weakStream || res.techClips || res.bestsolaris) {
-        this.playingUrl = res.weakStream ? res.weakStream : res.techClips? res.techClips : res.bestsolaris
+      if (res.weakStream || res.techClips || res.bestsolaris || res.gmrStream) {
+        this.playingUrl = res.gmrStream ? res.gmrStream : res.techClips? res.techClips : res.bestsolaris ? res.bestsolaris : res.weakStream
         this.src = this.sanitizer.bypassSecurityTrustResourceUrl(this.playingUrl)
         this.weakStream = res.weakStream
         this.techClips = res.techClips
         this.bestsolaris = res.bestsolaris
+        this.gmrStream = res.gmrStream
 
         this.router.navigate(
           [], 

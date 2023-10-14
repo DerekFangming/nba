@@ -6,6 +6,7 @@ const techclipsResolver = require('./stream-resolver/techclips-resolver')
 const weakStreamResolver = require('./stream-resolver/weak-stream-resolver')
 const bestsolarisResolver = require('./stream-resolver/bestsolaris-resolver')
 const nbaStreamsResolver = require('./stream-resolver/nbastreams-app-resolver')
+const gmrStreamsResolver = require('./stream-resolver/gmrstream-resolver')
 const { v4: uuidv4, NIL } = require('uuid')
 const axios = require('axios')
 const fs = require('fs')
@@ -86,7 +87,8 @@ app.get('/matches/:matchId', async (req, res) => {
     await Promise.all([
       weakStreamResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
       techclipsResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
-      bestsolarisResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name)
+      bestsolarisResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
+      gmrStreamsResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
     ])
   }
   matchDetailCache.set(req.params.matchId, matchDetail)
@@ -110,8 +112,8 @@ app.get('/clear-cache', async (req, res) => {
 app.get('/test', async (req, res) => {
 
   let matchDetail = {}
-  weakStreamResolver.resolve(matchDetail, 'Milwaukee Bucks', 'Detroit Pistons')
-  res.send({})
+  await gmrStreamsResolver.resolve(matchDetail, 'Miami Heat', 'San Antonio Spurs')
+  res.send(matchDetail)
 })
 
 app.use(express.static(path.join(__dirname, 'public')))
