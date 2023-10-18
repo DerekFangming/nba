@@ -120,7 +120,7 @@ export class NbaComponent implements OnInit, OnDestroy {
     this.http.get<any>(environment.urlPrefix + 'matches/' + streamId).subscribe(res => {
       this.loadingMatcheDetails = false
       if (res.weakStream || res.techClips || res.bestsolaris || res.gmrStream) {
-        this.playingUrl = res.gmrStream ? res.gmrStream : res.techClips? res.techClips : res.bestsolaris ? res.bestsolaris : res.weakStream
+        this.playingUrl = res.weakStream ? res.weakStream : res.techClips? res.techClips : res.bestsolaris ? res.bestsolaris : res.gmrStream
         this.src = this.sanitizer.bypassSecurityTrustResourceUrl(this.playingUrl)
         this.weakStream = res.weakStream
         this.techClips = res.techClips
