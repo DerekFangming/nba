@@ -31,8 +31,6 @@ async function resolve(result, teamName1, teamName2) {
 
     })
 
-    console.log('=========== 1')
-    console.log(matchUrl)
     res = await axios.get(matchUrl)
     $ = cheerio.load(res.data)
     $ = cheerio.load($('textarea').first().text())

@@ -90,9 +90,11 @@ app.get('/matches/:matchId', async (req, res) => {
       bestsolarisResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
       gmrStreamsResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
     ])
+    //https://freeviplive.com/
   }
   matchDetailCache.set(req.params.matchId, matchDetail)
-  res.send(matchDetail)
+
+  res.send(Object.keys(matchDetail).map(k => matchDetail[k]).filter(v => v != null).sort((a, b) => a.includes('weakspell') ? -1 : 1))
 })
 
 app.get('/other-matches', async (req, res) => {

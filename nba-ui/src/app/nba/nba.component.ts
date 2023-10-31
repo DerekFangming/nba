@@ -19,11 +19,7 @@ export class NbaComponent implements OnInit, OnDestroy {
   streamId = ''
   timerInterval: any
 
-  weakStream: string = null
-  techClips: string = null
-  bestsolaris: string = null
-  gmrStream: string = null
-
+  streamUrls = []
   playingUrl: string = null
 
   infoTitle = ''
@@ -119,26 +115,26 @@ export class NbaComponent implements OnInit, OnDestroy {
     this.streamId = streamId
     this.http.get<any>(environment.urlPrefix + 'matches/' + streamId).subscribe(res => {
       this.loadingMatcheDetails = false
-      if (res.weakStream || res.techClips || res.bestsolaris || res.gmrStream) {
-        this.playingUrl = res.weakStream ? res.weakStream : res.techClips? res.techClips : res.bestsolaris ? res.bestsolaris : res.gmrStream
-        this.src = this.sanitizer.bypassSecurityTrustResourceUrl(this.playingUrl)
-        this.weakStream = res.weakStream
-        this.techClips = res.techClips
-        this.bestsolaris = res.bestsolaris
-        this.gmrStream = res.gmrStream
 
-        this.router.navigate(
-          [], 
-          {
-            relativeTo: this.route,
-            queryParams: {streamId: streamId}, 
-            queryParamsHandling: 'merge'
-          })
-      } else {
+      if (res.length == 0) {
         this.infoTitle = '系统错误'
         this.infoDescription = '未找到直播地址'
         $("#infoModal").modal('show')
+        return
       }
+
+      this.streamUrls = res
+      this.playingUrl = this.streamUrls[0]
+      this.src = this.sanitizer.bypassSecurityTrustResourceUrl(this.playingUrl)
+
+      this.router.navigate(
+        [], 
+        {
+          relativeTo: this.route,
+          queryParams: {streamId: streamId}, 
+          queryParamsHandling: 'merge'
+        })
+      
     }, error => {
       this.loadingMatcheDetails = false
       this.infoTitle = '系统错误'
