@@ -1,5 +1,6 @@
 
 const axios = require('axios')
+const cheerio = require('cheerio')
 
 async function resolve(result, teamName1, teamName2) {
   if (result.weakStream != null) return
@@ -15,9 +16,13 @@ async function attemptToResolve(result, teamName1, teamName2, suffix = '') {
   let url = 'https://weakspell.org/nba-stream/' +
     (teamName1.split(' ').join('-') + '-vs-' + teamName2.split(' ').join('-')).toLowerCase() + suffix
   try {
-    await axios.get(url)
-    result.weakStream = url
-    console.log('resolved ' + url)
+    let res = await axios.get(url)
+    let $ = cheerio.load(res.data)
+
+    $ = cheerio.load($('textarea').first().text())
+    result.weakStream = $('iframe').first().attr('src')
+
+    console.log('resolved ' + result.weakStream)
   } catch(error) {
     console.log(`Failed to resolve ${url}, status code ${error}`)
   }
