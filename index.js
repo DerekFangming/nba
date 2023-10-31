@@ -7,6 +7,7 @@ const weakStreamResolver = require('./stream-resolver/weak-stream-resolver')
 const bestsolarisResolver = require('./stream-resolver/bestsolaris-resolver')
 const nbaStreamsResolver = require('./stream-resolver/nbastreams-app-resolver')
 const gmrStreamsResolver = require('./stream-resolver/gmrstream-resolver')
+const freevipliveResolver = require('./stream-resolver/freeviplive-resolver')
 const { v4: uuidv4, NIL } = require('uuid')
 const axios = require('axios')
 const fs = require('fs')
@@ -89,8 +90,8 @@ app.get('/matches/:matchId', async (req, res) => {
       techclipsResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
       bestsolarisResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
       gmrStreamsResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
+      freevipliveResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
     ])
-    //https://freeviplive.com/
   }
   matchDetailCache.set(req.params.matchId, matchDetail)
 
