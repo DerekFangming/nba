@@ -86,10 +86,12 @@ app.get('/matches/:matchId', async (req, res) => {
     console.log(`Loading matches: ${match.teams[0].name} vs ${match.teams[1].name}`)
     console.log(`====================================================================`)
     await Promise.all([
+      // techclipsResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name), ????
+      // gmrStreamsResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
+
+
       weakStreamResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
-      techclipsResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
       bestsolarisResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
-      gmrStreamsResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
       freevipliveResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
     ])
   }

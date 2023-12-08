@@ -12,21 +12,22 @@ async function resolve(result, teamName1, teamName2) {
     $('table').first().find('tr').each(function(i, tr){
       if (result.freeviplive != null) return
 
-      let title = $(tr).find('td').first().next().next()
-      let type = title.next()
+      let type = $(tr).find('td').first().next().next()
       if (type.text() != 'NBA') return
 
-      let teams = title.text().split(/--/)
+      let title = type.next()
+      let teams = title.text().split(/-/)
       if (teams.length != 2) return
 
       let teamRes1 = teams[0].toLowerCase().trim()
       let teamRes2 = teams[1].toLowerCase().trim()
 
-      console.log(title.text())
+      // console.log(title.text())
 
       if ((teamName1.toLowerCase().includes(teamRes1) && teamName2.toLowerCase().includes(teamRes2) ) ||
       (teamName1.toLowerCase().includes(teamRes2) && teamName2.toLowerCase().includes(teamRes1))) {
-        result.freeviplive = type.next().children().first().attr("href")
+        result.freeviplive = title.next().children().first().attr("href")
+        result.freevipliveSecond = title.next().next().children().first().attr("href")
       }
     })
 
