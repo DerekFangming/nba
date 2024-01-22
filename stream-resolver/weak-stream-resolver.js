@@ -13,7 +13,7 @@ async function resolve(result, teamName1, teamName2) {
 }
 
 async function attemptToResolve(result, teamName1, teamName2, suffix = '') {
-  let url = 'https://weakspell.org/nba-stream/' +
+  let url = 'https://weakspell.to/nba-stream/' +
     (teamName1.split(' ').join('-') + '-vs-' + teamName2.split(' ').join('-')).toLowerCase() + suffix
   try {
     let res = await axios.get(url)
