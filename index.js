@@ -108,7 +108,18 @@ app.get('/other-matches', async (req, res) => {
 })
 
 app.post('/other-matches', async (req, res) => {
-  otherMatches = req.body
+  m = req.body
+  m.created = new Date()
+  otherMatches.push(m)
+  res.send(otherMatches)
+})
+
+app.post('/other-matches/replace', async (req, res) => {
+  let matches = req.body
+  for (let m of matches) {
+    m.created = new Date()
+  }
+  otherMatches = matches
   res.send(otherMatches)
 })
 
@@ -137,3 +148,8 @@ app.listen(port, () => {
 })
 
 findMatches()
+
+setInterval(() => {
+  let now = new Date()
+  otherMatches = otherMatches.filter(m => (now - m.created) < 172800000) // two days
+}, 21600000)// six hours

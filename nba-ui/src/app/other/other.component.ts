@@ -20,6 +20,9 @@ export class OtherComponent implements OnInit, OnDestroy {
   infoDescription = ''
   playingUrl: string = null
 
+  title = ''
+  link = ''
+
   constructor(private http: HttpClient, public sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
@@ -76,6 +79,25 @@ export class OtherComponent implements OnInit, OnDestroy {
 
   getMenuHeight() {
     return window.innerWidth >= 960 ? {height: '90vh'} : {height: '55vh'}
+  }
+
+  showAddMatchModal() {
+    $("#addMatchModal").modal('show')
+  }
+
+  addMatch() {
+    if (this.link.trim() == '') {
+      return
+    }
+
+    let match = {title: this.title, link: this.link}
+    this.http.post<any>(environment.urlPrefix + 'other-matches', match).subscribe(res => {
+      this.matches.push(match)
+      $("#addMatchModal").modal('hide')
+    }, error => {
+      alert(error)
+    })
+
   }
 
 }
