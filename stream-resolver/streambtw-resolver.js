@@ -16,8 +16,8 @@ async function resolve(result, teamName1, teamName2) {
     $('a').each(async function(i, a) {
       if (result.streambtw != null) return
 
-      let title = $(a).html().toLocaleLowerCase()
-      if (title.includes(teamName1.toLocaleLowerCase()) && title.includes(teamName2.toLocaleLowerCase())) {
+      let title = $(a).parent().html().toLowerCase()
+      if (title.includes(teamName1.toLowerCase()) && title.includes(teamName2.toLowerCase())) {
         result.streambtw = $(a).attr("href")
       }
 

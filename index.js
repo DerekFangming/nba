@@ -88,16 +88,17 @@ app.get('/matches/:matchId', async (req, res) => {
     console.log(`Loading matches: ${match.teams[0].name} vs ${match.teams[1].name}`)
     console.log(`====================================================================`)
     await Promise.all([
+      gmrStreamsResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
+      streambtwResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
+
+      // bestsolarisResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
+      // weakStreamResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
       // freevipliveResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name), // not working, ad block
       // techclipsResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name), // not working, no url
-      // gmrStreamsResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name), // not working, no video
 
-      weakStreamResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
-      bestsolarisResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
       
 
       // elixxResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
-      // streambtwResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
     ])
   }
   matchDetailCache.set(req.params.matchId, matchDetail)
