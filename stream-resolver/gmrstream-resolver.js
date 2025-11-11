@@ -6,7 +6,7 @@ async function resolve(result, teamName1, teamName2) {
 
   console.log('Resolving GMR Stream')
   try {
-    let res = await axios.get('https://givemeredditstreams.xyz/nba')
+    let res = await axios.get('https://givemeredditstreams.top/nba')
     // Find url
 
     let matchUrl
@@ -25,7 +25,7 @@ async function resolve(result, teamName1, teamName2) {
 
       if ((teamName1.toLowerCase().includes(teamRes1) && teamName2.toLowerCase().includes(teamRes2) ) ||
       (teamName1.toLowerCase().includes(teamRes2) && teamName2.toLowerCase().includes(teamRes1))) {
-        matchUrl = 'https://givemeredditstreams.xyz/' + $(aa).attr('href')
+        matchUrl = 'https://givemeredditstreams.top/' + $(aa).attr('href')
         return
       }
 
