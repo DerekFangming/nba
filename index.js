@@ -11,6 +11,7 @@ const freevipliveResolver = require('./stream-resolver/freeviplive-resolver')
 const elixxResolver = require('./stream-resolver/elixx-resolver')
 const streambtwResolver = require('./stream-resolver/streambtw-resolver')
 const streameastResolver = require('./stream-resolver/streameast-resolver')
+const sharkstreamsResolver = require('./stream-resolver/sharkstreams-resolver')
 const { v4: uuidv4, NIL } = require('uuid')
 const axios = require('axios')
 const fs = require('fs')
@@ -91,6 +92,7 @@ app.get('/matches/:matchId', async (req, res) => {
     await Promise.all([
       gmrStreamsResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
       streameastResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
+      sharkstreamsResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
 
       // streambtwResolver.resolve(matchDetail, match.teams[0].name, match.teams[1].name),
 
