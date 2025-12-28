@@ -105,7 +105,7 @@ app.get('/matches/:matchId', async (req, res) => {
   }
   matchDetailCache.set(req.params.matchId, matchDetail)
 
-  res.send(Object.keys(matchDetail).map(k => matchDetail[k]).filter(v => v != null).sort((a, b) => a.includes('weakspell') ? -1 : 1))
+  res.send(Object.keys(matchDetail).map(k => matchDetail[k]).filter(v => v != null).sort((a, b) => a.includes('givemereddit') ? -1 : 1))
 })
 
 app.get('/other-matches', async (req, res) => {

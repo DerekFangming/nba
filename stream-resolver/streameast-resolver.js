@@ -26,7 +26,9 @@ async function resolve(result, teamName1, teamName2) {
     res = await axios.get(matchUrl)
     $ = cheerio.load(res.data)
 
-    result.streameast = $('iframe').first().attr('src')
+    if ($('iframe').first().attr('src') != 'about:blank') {
+      result.streameast = $('iframe').first().attr('src')
+    }
 
   } catch(error) {
     console.log(`Failed to resolve streameast, error is: ${error}`)
